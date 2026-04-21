@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wanderlust-deployment
+  labels:
+    app: wanderlust
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wanderlust
+  template:
+    metadata:
+      labels:
+        app: wanderlust
+    spec:
+      containers:
+      - name: wanderlust-app
+        # Replace <dockerhub-username> with your actual username
+        image: nadeemahmed07/wanderlust:v1
+        ports:
+        - containerPort: 8082
+        env:
+        - name: MONGO_URL
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secrets
+              key: MONGO_URI
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
